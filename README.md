@@ -26,15 +26,13 @@ Once the installation of the VM is complete you will want to perform a few addit
 In order to reduce things that might slow down the VM it is helpful to disable screensavers, screen locking and power saving features.
 
 Open **Settings** and do the following:
-1. Click **Battery** on the sidebar.
-1. Click **Options...**.
+1. Click **Energy** on the sidebar.
 1. Turn **On** "Prevent automatic sleeping when the display is off".
 1. Click **Done**.
 1. Click **Screen Saver** on the sidebar.
 1. Click **Lock Screen Settings...**.
 1. Set "Start Screen Saver when inactive" to Never.
 1. Set "Turn display off when inactive" to Never.
-1. Set "Turn display off on power adapter when inactive" to Never.
 1. Set "Require password after screen saver begins or display is turned off" to Never.
 1. Enter password when prompted and click **Modify Settings**.
 1. Click **Turn Off Screen Lock**.
@@ -44,6 +42,7 @@ Open **Settings** and do the following:
 1. Click on **Privacy & Security** on the sidebar.
 1. Click on **App Management**.
 1. Click **+**.
+2. Enter password when prompted and click **Modify Settings**.
 1. Navigate to _Applications_ then _Utilities_ and select _Terminal_.
 1. Click **Open**.
 
