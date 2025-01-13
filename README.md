@@ -1,5 +1,13 @@
-# build-openconnect-gui-macos
-Provides instruction for building OpenConnect-GUI for macOS
+# Instructions for Building OpenConnect-GUI for macOS
+## Introduction
+The <a href="https://gui.openconnect-vpn.net" target="blank">OpenConnect-GUI</a> client provides a graphical interface to the OpenConnect VPN client for both macOS and Windows.
+
+Currently, a package for the latest release of macOS is not provided. Since I wanted to use the same package on both macOS and Windows and have the latest release I decided to build the macOS package myself. Unfortunately there aren't any instructions provided and searching the web did not surface instructions by others attempting build the macOS package from source so I had to come up with something that worked for me by reading what I could find and a lot of trail and error.
+
+The following instructions are my solution for building a universal package for OpenConnect-GUI that runs on macOS 12 and newer. Some of the complexity in getting everything to build properly was due to my desire to have the package work on macOS 12. Yes, it is EOL now but just recently so and it indicates that it supports macOS 12 so it seemed like it would be good come up with a complmentary solution. I believe if instead the package was only built to support macOS 13 and newer that a standard brew install of qt6 would suffice instead of building it from source to have a target of macOS 12.
+
+## Environment
+The build process can be done on any current macOS but I didn't want to polute my machines working environment with unnecessary complexity so I elected to use a virtual machine for my environment running using <a href="https://mac.getutm.app/" target="blank">UTM</a>.
 
 Install UTM
 Create VM using latest macOS ipsw from https://ipsw.me
