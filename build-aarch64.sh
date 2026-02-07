@@ -11,41 +11,46 @@ export ULIMIT_SAVED=$(ulimit -n)
 # temporarily set maximum amount of open file descriptors to 10000
 ulimit -n 10000
 
-# install homebrew for aarch64
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-# ensure Xcode path is set to /Applications/Xcode.app/Contents/Developer since
-# Command Line Tools is installed, if it isn't already, by the Homebrew
-# installation process.
-sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
-
-# set homebrew environment variables
-eval "$(/opt/homebrew/bin/brew shellenv)"
-
-# force homebrew to use MacOSX13.1 SDK
-export SDKROOT=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.1.sdk
 
 # adjust the gnutls homebrew formula so that it is not configured to look in a
 # specific default trust store file. this should cause the macOS access
 # keychain to be used instead.
 mkdir -p ${BUILD_ROOT}/rb-aarch64
-brew install gnutls
+# Ensure gnutls is installed to get the formula
+if ! brew list gnutls &>/dev/null; then
+    brew install gnutls
+fi
 cp /opt/homebrew/opt/gnutls/.brew/gnutls.rb ${BUILD_ROOT}/rb-aarch64/
 sed -I '' -e '/--with-default-trust-store-file/d' ${BUILD_ROOT}/rb-aarch64/gnutls.rb
-brew uninstall gnutls
 
-# install modified gnutls formula
-brew install --build-from-source --formula ${BUILD_ROOT}/rb-aarch64/gnutls.rb gnutls
+# uninstall gnutls ignoring dependencies to allow reinstallation from source
+brew uninstall --ignore-dependencies gnutls
+
+# Create a local tap to install modified formulae
+brew tap-new local/taps 2>/dev/null || true
+cp ${BUILD_ROOT}/rb-aarch64/gnutls.rb $(brew --repository local/taps)/Formula/gnutls.rb
+
+# install modified gnutls formula from local tap
+brew install --build-from-source local/taps/gnutls
 
 # adjust qt@6 homebrew formula to force target to macOS 12.0
 mkdir -p ${BUILD_ROOT}/rb-aarch64
-brew install qt@6
+if ! brew list qt@6 &>/dev/null; then
+    brew install qt@6
+fi
 cp /opt/homebrew/opt/qt/.brew/qt.rb ${BUILD_ROOT}/rb-aarch64/
 sed -I '' -e 's/-DCMAKE_OSX_DEPLOYMENT_TARGET=#{MacOS.version}.0/-DCMAKE_OSX_DEPLOYMENT_TARGET=12.0/' ${BUILD_ROOT}/rb-aarch64/qt.rb
-brew uninstall qt@6
 
-# install modified qt@6 formula
-brew install --build-from-source --formula ${BUILD_ROOT}/rb-aarch64/qt.rb qt6
+# uninstall qt@6 ignoring dependencies
+brew uninstall --ignore-dependencies qt@6
+
+# install modified qt formula from local tap
+cp ${BUILD_ROOT}/rb-aarch64/qt.rb $(brew --repository local/taps)/Formula/qt.rb
+brew install --build-from-source local/taps/qt
+
+# Clean up tap
+brew untap local/taps
 
 # install remaining dependencies
 brew install cmake openconnect spdlog vulkan-headers pkgconfig
