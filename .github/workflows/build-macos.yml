@@ -1,0 +1,29 @@
+name: Build OpenConnect GUI
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build on macOS
+    runs-on: macos-14
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Set up Homebrew
+      uses: Homebrew/actions/setup-homebrew@master
+
+    - name: Run Build Script
+      run: |
+        export BUILD_ROOT=$(pwd)/build_artifacts
+        mkdir -p "$BUILD_ROOT"
+        chmod +x build-aarch64.sh
+        ./build-aarch64.sh
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: OpenConnect-GUI-macOS
+        path: build_artifacts/openconnect-gui-macos12-aarch64/bin/OpenConnect-GUI.app
